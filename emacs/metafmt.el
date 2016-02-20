@@ -37,7 +37,7 @@
 (define-globalized-minor-mode global-metafmt-mode metafmt-mode (lambda () (metafmt-mode t)))
 
 (defun metafmt-before-save ()
-  (let ((command `("metafmt" "-emacs" ,(symbol-name major-mode) "-"))
+  (let ((command `("metafmt" "-editor" "emacs" "-syntax" ,(symbol-name major-mode) "-"))
         (old-point (point))
         (old-window-start (window-start))
         (tmp-buffer (get-buffer-create " *metafmt*")))

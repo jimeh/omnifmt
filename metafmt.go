@@ -38,10 +38,17 @@ import (
 // Formatters
 //
 
+const EMACS = "emacs"
+const SUBLIME = "sublime"
+
+var editors = []string{EMACS, SUBLIME}
+
+type syntaxMap map[string][]string
+
 type formatter struct {
-	Commands        [][]string
-	EmacsMajorModes []string
-	Extensions      []string
+	Commands   [][]string
+	Extensions []string
+	Syntaxes   syntaxMap
 }
 
 var formatters = []*formatter{
@@ -50,40 +57,55 @@ var formatters = []*formatter{
 		Commands: [][]string{
 			[]string{"clang-format", "-style=WebKit", "-"},
 		},
-		EmacsMajorModes: []string{"c-mode", "c++-mode"},
-		Extensions:      []string{".c", ".cpp", ".cxx", ".h", ".hpp", ".hxx"},
+		Extensions: []string{".c", ".cpp", ".cxx", ".h", ".hpp", ".hxx"},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"c-mode", "c++-mode"},
+			SUBLIME: []string{"C"},
+		},
 	},
 	// CSS
 	{
 		Commands: [][]string{
 			[]string{"cssfmt"},
 		},
-		EmacsMajorModes: []string{"css-mode"},
-		Extensions:      []string{".css"},
+		Extensions: []string{".css"},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"css-mode"},
+			SUBLIME: []string{"CSS"},
+		},
 	},
 	// Go
 	{
 		Commands: [][]string{
 			[]string{"goimports"},
 		},
-		EmacsMajorModes: []string{"go-mode"},
-		Extensions:      []string{".go"},
+		Extensions: []string{".go"},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"go-mode"},
+			SUBLIME: []string{"GoSublime-Go"},
+		},
 	},
 	// JavaScript
 	{
 		Commands: [][]string{
 			[]string{"semistandard-format", "-"},
 		},
-		EmacsMajorModes: []string{"js-mode", "js2-mode", "js3-mode"},
-		Extensions:      []string{".js", ".jsx"},
+		Extensions: []string{".js", ".jsx"},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"js-mode", "js2-mode", "js3-mode"},
+			SUBLIME: []string{"JavaScript", "JavaScript (Babel)"},
+		},
 	},
 	// JSON
 	{
 		Commands: [][]string{
 			[]string{"jsonlint", "--sort-keys", "-"},
 		},
-		EmacsMajorModes: []string{"json-mode"},
-		Extensions:      []string{".json"},
+		Extensions: []string{".json"},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"json-mode"},
+			SUBLIME: []string{"JSON"},
+		},
 	},
 	// Python
 	{
@@ -91,24 +113,33 @@ var formatters = []*formatter{
 			[]string{"autopep8", "--max-line-length=98", "-"},
 			[]string{"isort", "--line-width", "98", "--multi_line", "3", "-"},
 		},
-		EmacsMajorModes: []string{"python-mode"},
-		Extensions:      []string{".py"},
+		Extensions: []string{".py"},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"python-mode"},
+			SUBLIME: []string{"Python"},
+		},
 	},
 	// SASS
 	{
 		Commands: [][]string{
 			[]string{"sass-convert", "--no-cache", "--from", "sass", "--to", "sass", "--indent", "4", "--stdin"},
 		},
-		EmacsMajorModes: []string{"sass-mode"},
-		Extensions:      []string{".sass"},
+		Extensions: []string{".sass"},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"sass-mode"},
+			SUBLIME: []string{"SASS"},
+		},
 	},
 	// SCSS
 	{
 		Commands: [][]string{
 			[]string{"sass-convert", "--no-cache", "--from", "scss", "--to", "scss", "--indent", "4", "--stdin"},
 		},
-		EmacsMajorModes: []string{"scss-mode"},
-		Extensions:      []string{".scss"},
+		Extensions: []string{".scss"},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"scss-mode"},
+			SUBLIME: []string{"SCSS"},
+		},
 	},
 }
 
@@ -116,34 +147,25 @@ var formatters = []*formatter{
 // Lookup maps
 //
 
-type lookupMap map[string]*formatter
-
-var emacsToFormatter = make(lookupMap)
-var extToFormatter = make(lookupMap)
+var extToFormatter = make(map[string]*formatter)
+var syntaxToFormatter = make(map[string]map[string]*formatter)
 
 func init() {
+	for _, editor := range editors {
+		syntaxToFormatter[editor] = make(map[string]*formatter)
+	}
+
 	for _, formatter := range formatters {
 		for _, ext := range formatter.Extensions {
 			extToFormatter[ext] = formatter
 		}
 
-		for _, majorMode := range formatter.EmacsMajorModes {
-			emacsToFormatter[majorMode] = formatter
+		for editor, syntaxes := range formatter.Syntaxes {
+			for _, syntax := range syntaxes {
+				syntaxToFormatter[editor][syntax] = formatter
+			}
 		}
 	}
-}
-
-func formatterForEmacs() *formatter {
-	if *emacs == "" {
-		return nil
-	}
-
-	formatter, ok := emacsToFormatter[*emacs]
-	if !ok {
-		return nil
-	}
-
-	return formatter
 }
 
 func formatterForPath(path string) *formatter {
@@ -164,7 +186,8 @@ func formatterForPath(path string) *formatter {
 // Flags
 //
 
-var emacs = flag.String("emacs", "", "Emacs major mode")
+var editor = flag.String("editor", "", "Editor name")
+var syntax = flag.String("syntax", "", "Editor syntax name")
 var write = flag.Bool("write", false, "Write the file in place")
 
 //
@@ -238,9 +261,13 @@ func formatFile(path string, op formatOp) {
 }
 
 func formatStdin() {
-	formatter := formatterForEmacs()
-	if formatter == nil {
-		log.Fatalln("Must be given an Emacs major mode")
+	if *editor == "" && *syntax == "" {
+		log.Fatalln("I need to know the editor and syntax combo")
+	}
+
+	formatter, ok := syntaxToFormatter[*editor][*syntax]
+	if !ok {
+		log.Fatalln("Cannot find a supported formatter for given editor + syntax combo")
 	}
 
 	if err := formatChain(os.Stdout, os.Stdin, formatter.Commands); err != nil {
