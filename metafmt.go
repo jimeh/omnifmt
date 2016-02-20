@@ -210,11 +210,11 @@ func main() {
 // High level operations
 //
 
-var IgnoreDirs = []string{".git", ".hg", ".svn", "node_modules"}
+var ignoreDirs = []string{".git", ".hg", ".svn", "node_modules"}
 
 func formatDir(path string, op formatOp) {
 	filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
-		if info.IsDir() && dry.StringListContains(IgnoreDirs, info.Name()) {
+		if info.IsDir() && dry.StringListContains(ignoreDirs, info.Name()) {
 			return filepath.SkipDir
 		}
 
