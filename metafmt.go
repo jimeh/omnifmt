@@ -104,7 +104,7 @@ var formatters = []*formatter{
 		Extensions: []string{".json"},
 		Syntaxes: syntaxMap{
 			EMACS:   []string{"json-mode"},
-			SUBLIME: []string{"JSON"},
+			SUBLIME: []string{"JSON", "Sublime Commands"},
 		},
 	},
 	// Python
