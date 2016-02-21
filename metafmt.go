@@ -30,6 +30,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
+	"strings"
 
 	"github.com/ungerik/go-dry"
 )
@@ -43,11 +45,13 @@ const SUBLIME = "sublime"
 
 var editors = []string{EMACS, SUBLIME}
 
+type installMap map[string][]string
 type syntaxMap map[string][]string
 
 type formatter struct {
 	Commands   [][]string
 	Extensions []string
+	Install    installMap
 	Syntaxes   syntaxMap
 }
 
@@ -58,6 +62,9 @@ var formatters = []*formatter{
 			[]string{"clang-format", "-style=WebKit", "-"},
 		},
 		Extensions: []string{".c", ".cpp", ".cxx", ".h", ".hpp", ".hxx"},
+		Install: installMap{
+			"darwin": []string{"brew", "install", "clang-format"},
+		},
 		Syntaxes: syntaxMap{
 			EMACS:   []string{"c-mode", "c++-mode"},
 			SUBLIME: []string{"C"},
@@ -69,6 +76,9 @@ var formatters = []*formatter{
 			[]string{"cssfmt"},
 		},
 		Extensions: []string{".css"},
+		Install: installMap{
+			"any": []string{"npm", "install", "-g", "cssfmt"},
+		},
 		Syntaxes: syntaxMap{
 			EMACS:   []string{"css-mode"},
 			SUBLIME: []string{"CSS"},
@@ -80,6 +90,9 @@ var formatters = []*formatter{
 			[]string{"goimports"},
 		},
 		Extensions: []string{".go"},
+		Install: installMap{
+			"any": []string{"go", "get", "golang.org/x/tools/cmd/goimports"},
+		},
 		Syntaxes: syntaxMap{
 			EMACS:   []string{"go-mode"},
 			SUBLIME: []string{"GoSublime-Go"},
@@ -91,6 +104,9 @@ var formatters = []*formatter{
 			[]string{"semistandard-format", "-"},
 		},
 		Extensions: []string{".js", ".jsx"},
+		Install: installMap{
+			"any": []string{"npm", "install", "-g", "semistandard-format"},
+		},
 		Syntaxes: syntaxMap{
 			EMACS:   []string{"js-mode", "js2-mode", "js3-mode"},
 			SUBLIME: []string{"JavaScript", "JavaScript (Babel)"},
@@ -102,6 +118,9 @@ var formatters = []*formatter{
 			[]string{"jsonlint", "--sort-keys", "-"},
 		},
 		Extensions: []string{".json"},
+		Install: installMap{
+			"any": []string{"npm", "install", "-g", "jsonlint"},
+		},
 		Syntaxes: syntaxMap{
 			EMACS:   []string{"json-mode"},
 			SUBLIME: []string{"JSON", "Sublime Commands"},
@@ -113,6 +132,9 @@ var formatters = []*formatter{
 			[]string{"autopep8", "--max-line-length=98", "-"},
 			[]string{"isort", "--line-width", "98", "--multi_line", "3", "-"},
 		},
+		Install: installMap{
+			"any": []string{"pip", "install", "autopep8", "isort"},
+		},
 		Extensions: []string{".py"},
 		Syntaxes: syntaxMap{
 			EMACS:   []string{"python-mode"},
@@ -123,6 +145,9 @@ var formatters = []*formatter{
 	{
 		Commands: [][]string{
 			[]string{"sass-convert", "--no-cache", "--from", "sass", "--to", "sass", "--indent", "4", "--stdin"},
+		},
+		Install: installMap{
+			"any": []string{"gem", "install", "sass"},
 		},
 		Extensions: []string{".sass"},
 		Syntaxes: syntaxMap{
@@ -136,6 +161,9 @@ var formatters = []*formatter{
 			[]string{"sass-convert", "--no-cache", "--from", "scss", "--to", "scss", "--indent", "4", "--stdin"},
 		},
 		Extensions: []string{".scss"},
+		Install: installMap{
+			"any": []string{"gem", "install", "sass"},
+		},
 		Syntaxes: syntaxMap{
 			EMACS:   []string{"scss-mode"},
 			SUBLIME: []string{"SCSS"},
@@ -187,6 +215,7 @@ func formatterForPath(path string) *formatter {
 //
 
 var editor = flag.String("editor", "", "Editor name")
+var install = flag.Bool("install", false, "Install formatters")
 var syntax = flag.String("syntax", "", "Editor syntax name")
 var write = flag.Bool("write", false, "Write the file in place")
 
@@ -199,6 +228,10 @@ type formatOp func(string, *formatter) error
 func main() {
 	// Flags
 	flag.Parse()
+
+	if *install {
+		installFormatters()
+	}
 
 	args := flag.Args()
 	if len(args) < 1 {
@@ -232,6 +265,27 @@ func main() {
 //
 // High level operations
 //
+
+func installFormatters() {
+	platforms := []string{"any", runtime.GOOS}
+
+	for _, formatter := range formatters {
+		for _, platform := range platforms {
+			cmd, ok := formatter.Install[platform]
+			if ok {
+				c := exec.Command(cmd[0], cmd[1:]...)
+
+				log.Println(strings.Join(cmd, " "))
+
+				if err := c.Run(); err != nil {
+					log.Fatalln(err)
+				}
+
+				break
+			}
+		}
+	}
+}
 
 var ignoreDirs = []string{".git", ".hg", ".svn", "node_modules"}
 
