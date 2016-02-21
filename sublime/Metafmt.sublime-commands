@@ -1,0 +1,6 @@
+[
+  {
+    "caption": "Format current file",
+    "command": "metafmt_buffer"
+  }
+]
