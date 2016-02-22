@@ -68,7 +68,7 @@ class MetafmtBufferCommand(sublime_plugin.TextCommand):
 class MetafmtBeforeSave(sublime_plugin.EventListener):
 
     def on_pre_save(self, view):
-        if not view.settings().get('metafmt_enabled', True):
+        if not view.settings().get('metafmt_enabled', False):
             return
 
         if not view.is_dirty():
