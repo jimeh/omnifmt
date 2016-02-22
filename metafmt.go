@@ -217,6 +217,7 @@ func formatterForPath(path string) *formatter {
 var editor = flag.String("editor", "", "Editor name")
 var install = flag.Bool("install", false, "Install formatters")
 var syntax = flag.String("syntax", "", "Editor syntax name")
+var verbose = flag.Bool("verbose", false, "Verbose output")
 var write = flag.Bool("write", false, "Write the file in place")
 
 //
@@ -307,6 +308,10 @@ func formatFile(path string, op formatOp) {
 	formatter := formatterForPath(path)
 	if formatter == nil {
 		return
+	}
+
+	if *verbose {
+		log.Println("Formatting", path)
 	}
 
 	if err := op(path, formatter); err != nil {
