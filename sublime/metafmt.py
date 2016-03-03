@@ -24,7 +24,6 @@
 
 import os.path
 import subprocess
-import sys
 
 import sublime
 import sublime_plugin
