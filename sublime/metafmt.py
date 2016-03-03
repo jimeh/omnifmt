@@ -75,6 +75,20 @@ class MetafmtToggleFormatOnSaveCommand(sublime_plugin.TextCommand):
         sublime.status_message('Format on save %s' % 'enabled' if new_state else 'disabled')
 
 
+class MetafmtToggleProjectFormatOnSaveCommand(sublime_plugin.TextCommand):
+
+    def run(self, *args):
+        window = self.view.window()
+
+        project_data = window.project_data()
+        new_state = not project_data.get('settings', dict()).get(KEY_METAFMT_ENABLED, False)
+
+        project_data['settings'][KEY_METAFMT_ENABLED] = new_state
+        window.set_project_data(project_data)
+
+        sublime.status_message('Format on save (project) %s' % 'enabled' if new_state else 'disabled')
+
+
 class MetafmtBeforeSave(sublime_plugin.EventListener):
 
     def on_pre_save(self, view):

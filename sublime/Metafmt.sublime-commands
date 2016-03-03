@@ -6,5 +6,9 @@
   {
     "caption": "Toggle format on save",
     "command": "metafmt_toggle_format_on_save"
+  },
+  {
+    "caption": "Toggle format on save for project",
+    "command": "metafmt_toggle_project_format_on_save"
   }
 ]
