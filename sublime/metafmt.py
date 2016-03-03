@@ -28,6 +28,8 @@ import subprocess
 import sublime
 import sublime_plugin
 
+KEY_METAFMT_ENABLED = 'metafmt_enabled'
+
 
 class MetafmtBufferCommand(sublime_plugin.TextCommand):
 
@@ -64,10 +66,19 @@ class MetafmtBufferCommand(sublime_plugin.TextCommand):
             return ''
 
 
+class MetafmtToggleFormatOnSaveCommand(sublime_plugin.TextCommand):
+
+    def run(self, *args):
+        new_state = not self.view.settings().get(KEY_METAFMT_ENABLED, False)
+
+        self.view.settings().set(KEY_METAFMT_ENABLED, new_state)
+        sublime.status_message('Format on save %s' % 'enabled' if new_state else 'disabled')
+
+
 class MetafmtBeforeSave(sublime_plugin.EventListener):
 
     def on_pre_save(self, view):
-        if not view.settings().get('metafmt_enabled', False):
+        if not view.settings().get(KEY_METAFMT_ENABLED, False):
             return
 
         if not view.is_dirty():

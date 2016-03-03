@@ -2,5 +2,9 @@
   {
     "caption": "Format current file",
     "command": "metafmt_buffer"
+  },
+  {
+    "caption": "Toggle format on save",
+    "command": "metafmt_toggle_format_on_save"
   }
 ]
