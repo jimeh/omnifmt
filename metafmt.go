@@ -169,6 +169,18 @@ var formatters = []*formatter{
 			SUBLIME: []string{"SCSS"},
 		},
 	},
+	// XML
+	{
+		Commands: [][]string{
+			[]string{"xmllint", "--format", "-"},
+		},
+		Extensions: []string{".xml"},
+		Install: installMap{},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"xml-mode"},
+			SUBLIME: []string{"XML"},
+		},
+	},
 }
 
 //
