@@ -67,7 +67,7 @@ var formatters = []*formatter{
 		},
 		Syntaxes: syntaxMap{
 			EMACS:   []string{"c-mode", "c++-mode"},
-			SUBLIME: []string{"C"},
+			SUBLIME: []string{"C", "C++"},
 		},
 	},
 	// CSS
@@ -175,7 +175,7 @@ var formatters = []*formatter{
 			[]string{"xmllint", "--format", "-"},
 		},
 		Extensions: []string{".xml"},
-		Install: installMap{},
+		Install:    installMap{},
 		Syntaxes: syntaxMap{
 			EMACS:   []string{"xml-mode"},
 			SUBLIME: []string{"XML"},

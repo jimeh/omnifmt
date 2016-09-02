@@ -1,0 +1,13 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "pcMltlD/XsHn2voMc8opx6+93Lo=",
+			"path": "github.com/ungerik/go-dry",
+			"revision": "6ce726ec33b799d9d18e82926dbf4eb30642a951",
+			"revisionTime": "2016-04-11T12:12:01Z"
+		}
+	],
+	"rootPath": "github.com/lvillani/metafmt"
+}

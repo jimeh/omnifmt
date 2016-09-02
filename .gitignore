@@ -1,4 +1,4 @@
-_vendor
+vendor/*/*
 
 #### joe made this: http://goel.io/joe
 
@@ -35,7 +35,7 @@ _testmain.go
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
 
 # Thumbnails
 ._*
