@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2015 Lorenzo Villani
+// Copyright (c) 2016 Lorenzo Villani
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -24,7 +24,6 @@ package main
 
 import (
 	"bytes"
-	"flag"
 	"io"
 	"log"
 	"os"
@@ -34,6 +33,7 @@ import (
 	"strings"
 
 	"github.com/ungerik/go-dry"
+	"github.com/urfave/cli"
 )
 
 //
@@ -95,57 +95,73 @@ func formatterForPath(path string) *formatter {
 }
 
 //
-// Flags
-//
-
-var editor = flag.String("editor", "", "Editor name")
-var ignoreErrors = flag.Bool("ignore-errors", false, "Ignore formatter errors")
-var install = flag.Bool("install", false, "Install formatters")
-var syntax = flag.String("syntax", "", "Editor syntax name")
-var verbose = flag.Bool("verbose", false, "Verbose output")
-var write = flag.Bool("write", false, "Write the file in place")
-
-//
 // Entry point
 //
 
 type formatOp func(string, *formatter) error
 
 func main() {
-	// Flags
-	flag.Parse()
+	app := cli.NewApp()
+	app.Name = "omnifmt"
+	app.Usage = "Universal formatter"
+	app.Version = "0.0.1"
 
-	if *install {
-		installFormatters()
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "e, editor",
+			Usage: "Editor name (used by integration plugins)",
+		},
+		cli.StringFlag{
+			Name:  "s, editor-syntax",
+			Usage: "Editor syntax/mode name (used by integration plugins)",
+		},
+		cli.BoolFlag{
+			Name:  "i, install",
+			Usage: "Install formatters",
+		},
+		cli.BoolFlag{
+			Name:  "w, write",
+			Usage: "Write the file in place",
+		},
 	}
 
-	args := flag.Args()
-	if len(args) < 1 {
-		return
-	}
-
-	// Format standard input, then stop
-	if len(args) == 1 && args[0] == "-" {
-		formatStdin()
-		return
-	}
-
-	// Select mode of operation (format to file or standard output)
-	var op formatOp
-	if *write {
-		op = formatWrite
-	} else {
-		op = formatStdout
-	}
-
-	// Format files
-	for _, path := range args {
-		if dry.FileIsDir(path) {
-			formatDir(path, op)
-		} else {
-			formatFile(path, op)
+	app.Action = func(c *cli.Context) {
+		if c.Bool("install") {
+			installFormatters()
 		}
+
+		args := c.Args()
+		if len(args) < 1 {
+			return
+		}
+
+		// Format standard input, then stop
+		if len(args) == 1 && args[0] == "-" {
+			formatStdin(c.String("editor"), c.String("editor-syntax"))
+
+			return
+		}
+
+		// Select mode of operation (format to file or standard output)
+		var op formatOp
+		if c.Bool("write") {
+			op = formatWrite
+		} else {
+			op = formatStdout
+		}
+
+		// Format files
+		for _, path := range args {
+			if dry.FileIsDir(path) {
+				formatDir(path, op)
+			} else {
+				formatFile(path, op)
+			}
+		}
+
 	}
+
+	app.Run(os.Args)
 }
 
 //
@@ -195,25 +211,17 @@ func formatFile(path string, op formatOp) {
 		return
 	}
 
-	if *verbose {
-		log.Println("Formatting", path)
-	}
-
 	if err := op(path, formatter); err != nil {
-		if *ignoreErrors {
-			log.Println(err, "(ignored)")
-		} else {
-			log.Fatalln(err)
-		}
+		log.Fatalln(err)
 	}
 }
 
-func formatStdin() {
-	if *editor == "" && *syntax == "" {
+func formatStdin(editor string, syntax string) {
+	if editor == "" && syntax == "" {
 		log.Fatalln("I need to know the editor and syntax combo")
 	}
 
-	formatter, ok := syntaxToFormatter[*editor][*syntax]
+	formatter, ok := syntaxToFormatter[editor][syntax]
 	if !ok {
 		log.Fatalln("Cannot find a supported formatter for given editor + syntax combo")
 	}

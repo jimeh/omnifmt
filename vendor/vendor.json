@@ -7,7 +7,13 @@
 			"path": "github.com/ungerik/go-dry",
 			"revision": "6ce726ec33b799d9d18e82926dbf4eb30642a951",
 			"revisionTime": "2016-04-11T12:12:01Z"
+		},
+		{
+			"checksumSHA1": "hMgsA75EXstfPmSOleRFJjm7VfQ=",
+			"path": "github.com/urfave/cli",
+			"revision": "33bb4c121333cd8eb7d8cc8d74474f4ec156f371",
+			"revisionTime": "2016-08-28T20:23:14Z"
 		}
 	],
-	"rootPath": "github.com/lvillani/metafmt"
+	"rootPath": "github.com/omnitools/omnifmt"
 }
