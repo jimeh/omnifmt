@@ -136,6 +136,20 @@ var formatters = []*formatter{
             SUBLIME: []string{"SCSS"},
         },
     },
+    // Terraform
+    {
+        Commands: [][]string{
+            []string{"terraform", "fmt", "-"},
+        },
+        Extensions: []string{".tf"},
+        Install: installMap{
+            "darwin": []string{"brew", "install", "terraform"},
+        },
+        Syntaxes: syntaxMap{
+            EMACS:   []string{"terraform-mode"},
+            SUBLIME: []string{"Terraform"},
+        },
+    },
     // XML
     {
         Commands: [][]string{
