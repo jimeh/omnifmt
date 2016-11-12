@@ -23,143 +23,143 @@
 package main
 
 var formatters = []*formatter{
-    // C/C++
-    {
-        Commands: [][]string{
-            []string{"clang-format", "-style=WebKit", "-"},
-        },
-        Extensions: []string{".c", ".cpp", ".cxx", ".h", ".hpp", ".hxx"},
-        Install: installMap{
-            "darwin": []string{"brew", "install", "clang-format"},
-        },
-        Syntaxes: syntaxMap{
-            EMACS:   []string{"c-mode", "c++-mode"},
-            SUBLIME: []string{"C", "C++"},
-        },
-    },
-    // CSS
-    {
-        Commands: [][]string{
-            []string{"cssfmt"},
-        },
-        Extensions: []string{".css"},
-        Install: installMap{
-            "any": []string{"npm", "install", "-g", "cssfmt"},
-        },
-        Syntaxes: syntaxMap{
-            EMACS:   []string{"css-mode"},
-            SUBLIME: []string{"CSS"},
-        },
-    },
-    // Go
-    {
-        Commands: [][]string{
-            []string{"goimports"},
-        },
-        Extensions: []string{".go"},
-        Install: installMap{
-            "any": []string{"go", "get", "golang.org/x/tools/cmd/goimports"},
-        },
-        Syntaxes: syntaxMap{
-            EMACS:   []string{"go-mode"},
-            SUBLIME: []string{"GoSublime-Go"},
-        },
-    },
-    // JavaScript
-    {
-        Commands: [][]string{
-            []string{"semistandard-format", "-"},
-        },
-        Extensions: []string{".js", ".jsx"},
-        Install: installMap{
-            "any": []string{"npm", "install", "-g", "semistandard-format"},
-        },
-        Syntaxes: syntaxMap{
-            EMACS:   []string{"js-mode", "js2-mode", "js3-mode"},
-            SUBLIME: []string{"JavaScript", "JavaScript (Babel)"},
-        },
-    },
-    // JSON
-    {
-        Commands: [][]string{
-            []string{"jsonlint", "--sort-keys", "-"},
-        },
-        Extensions: []string{".json"},
-        Install: installMap{
-            "any": []string{"npm", "install", "-g", "jsonlint"},
-        },
-        Syntaxes: syntaxMap{
-            EMACS:   []string{"json-mode"},
-            SUBLIME: []string{"JSON", "Sublime Commands"},
-        },
-    },
-    // Python
-    {
-        Commands: [][]string{
-            []string{"autopep8", "--max-line-length=98", "-"},
-            []string{"isort", "--line-width", "98", "--multi_line", "3", "-"},
-        },
-        Install: installMap{
-            "any": []string{"pip", "install", "autopep8", "isort"},
-        },
-        Extensions: []string{".py"},
-        Syntaxes: syntaxMap{
-            EMACS:   []string{"python-mode"},
-            SUBLIME: []string{"Python"},
-        },
-    },
-    // SASS
-    {
-        Commands: [][]string{
-            []string{"sass-convert", "--no-cache", "--from", "sass", "--to", "sass", "--indent", "4", "--stdin"},
-        },
-        Install: installMap{
-            "any": []string{"gem", "install", "sass"},
-        },
-        Extensions: []string{".sass"},
-        Syntaxes: syntaxMap{
-            EMACS:   []string{"sass-mode"},
-            SUBLIME: []string{"SASS"},
-        },
-    },
-    // SCSS
-    {
-        Commands: [][]string{
-            []string{"sass-convert", "--no-cache", "--from", "scss", "--to", "scss", "--indent", "4", "--stdin"},
-        },
-        Extensions: []string{".scss"},
-        Install: installMap{
-            "any": []string{"gem", "install", "sass"},
-        },
-        Syntaxes: syntaxMap{
-            EMACS:   []string{"scss-mode"},
-            SUBLIME: []string{"SCSS"},
-        },
-    },
-    // Terraform
-    {
-        Commands: [][]string{
-            []string{"terraform", "fmt", "-"},
-        },
-        Extensions: []string{".tf"},
-        Install: installMap{
-            "darwin": []string{"brew", "install", "terraform"},
-        },
-        Syntaxes: syntaxMap{
-            EMACS:   []string{"terraform-mode"},
-            SUBLIME: []string{"Terraform"},
-        },
-    },
-    // XML
-    {
-        Commands: [][]string{
-            []string{"xmllint", "--format", "-"},
-        },
-        Extensions: []string{".xml"},
-        Install:    installMap{},
-        Syntaxes: syntaxMap{
-            EMACS:   []string{"xml-mode"},
-            SUBLIME: []string{"XML"},
-        },
-    },
+	// C/C++
+	{
+		Commands: [][]string{
+			[]string{"clang-format", "-style=WebKit", "-"},
+		},
+		Extensions: []string{".c", ".cpp", ".cxx", ".h", ".hpp", ".hxx"},
+		Install: installMap{
+			"darwin": []string{"brew", "install", "clang-format"},
+		},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"c-mode", "c++-mode"},
+			SUBLIME: []string{"C", "C++"},
+		},
+	},
+	// CSS
+	{
+		Commands: [][]string{
+			[]string{"cssfmt"},
+		},
+		Extensions: []string{".css"},
+		Install: installMap{
+			"any": []string{"npm", "install", "-g", "cssfmt"},
+		},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"css-mode"},
+			SUBLIME: []string{"CSS"},
+		},
+	},
+	// Go
+	{
+		Commands: [][]string{
+			[]string{"goimports"},
+		},
+		Extensions: []string{".go"},
+		Install: installMap{
+			"any": []string{"go", "get", "golang.org/x/tools/cmd/goimports"},
+		},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"go-mode"},
+			SUBLIME: []string{"GoSublime-Go"},
+		},
+	},
+	// JavaScript
+	{
+		Commands: [][]string{
+			[]string{"semistandard-format", "-"},
+		},
+		Extensions: []string{".js", ".jsx"},
+		Install: installMap{
+			"any": []string{"npm", "install", "-g", "semistandard-format"},
+		},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"js-mode", "js2-mode", "js3-mode"},
+			SUBLIME: []string{"JavaScript", "JavaScript (Babel)"},
+		},
+	},
+	// JSON
+	{
+		Commands: [][]string{
+			[]string{"jsonlint", "--sort-keys", "-"},
+		},
+		Extensions: []string{".json"},
+		Install: installMap{
+			"any": []string{"npm", "install", "-g", "jsonlint"},
+		},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"json-mode"},
+			SUBLIME: []string{"JSON", "Sublime Commands"},
+		},
+	},
+	// Python
+	{
+		Commands: [][]string{
+			[]string{"autopep8", "--max-line-length=98", "-"},
+			[]string{"isort", "--line-width", "98", "--multi_line", "3", "-"},
+		},
+		Install: installMap{
+			"any": []string{"pip", "install", "autopep8", "isort"},
+		},
+		Extensions: []string{".py"},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"python-mode"},
+			SUBLIME: []string{"Python"},
+		},
+	},
+	// SASS
+	{
+		Commands: [][]string{
+			[]string{"sass-convert", "--no-cache", "--from", "sass", "--to", "sass", "--indent", "4", "--stdin"},
+		},
+		Install: installMap{
+			"any": []string{"gem", "install", "sass"},
+		},
+		Extensions: []string{".sass"},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"sass-mode"},
+			SUBLIME: []string{"SASS"},
+		},
+	},
+	// SCSS
+	{
+		Commands: [][]string{
+			[]string{"sass-convert", "--no-cache", "--from", "scss", "--to", "scss", "--indent", "4", "--stdin"},
+		},
+		Extensions: []string{".scss"},
+		Install: installMap{
+			"any": []string{"gem", "install", "sass"},
+		},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"scss-mode"},
+			SUBLIME: []string{"SCSS"},
+		},
+	},
+	// Terraform
+	{
+		Commands: [][]string{
+			[]string{"terraform", "fmt", "-"},
+		},
+		Extensions: []string{".tf"},
+		Install: installMap{
+			"darwin": []string{"brew", "install", "terraform"},
+		},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"terraform-mode"},
+			SUBLIME: []string{"Terraform"},
+		},
+	},
+	// XML
+	{
+		Commands: [][]string{
+			[]string{"xmllint", "--format", "-"},
+		},
+		Extensions: []string{".xml"},
+		Install:    installMap{},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"xml-mode"},
+			SUBLIME: []string{"XML"},
+		},
+	},
 }
