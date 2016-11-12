@@ -108,6 +108,22 @@ var formatters = []*formatter{
 			SUBLIME: []string{"Python"},
 		},
 	},
+	// Ruby
+	{
+		Commands: [][]string{
+			[]string{"rubocop", "--stdin", "--cache", "false", "--auto-correct", "--format", "emacs", "fake.rb"},
+			[]string{"sed", "-n", `/^====================$/,$p`},
+			[]string{"tail", "-n", "+2"},
+		},
+		Install: installMap{
+			"any": []string{"gem", "install", "rubocop"},
+		},
+		Extensions: []string{".rb", ".rake"},
+		Syntaxes: syntaxMap{
+			EMACS:   []string{"ruby-mode"},
+			SUBLIME: []string{"Ruby"},
+		},
+	},
 	// SASS
 	{
 		Commands: [][]string{
