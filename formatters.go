@@ -82,7 +82,7 @@ var formatters = []*formatter{
 	// JSON
 	{
 		Commands: [][]string{
-			[]string{"jsonlint", "--sort-keys", "-"},
+			[]string{"jsonlint", "-"},
 		},
 		Extensions: []string{".json"},
 		Install: installMap{
