@@ -44,4 +44,5 @@ the file and do nothing.
 * Python:
   - [autopep8](https://github.com/hhatto/autopep8);
   - [isort](https://github.com/timothycrosley/isort);
+* Ruby: [rubocop](https://github.com/bbatsov/rubocop) (using `--auto-correct`);
 * SASS/SCSS: [ruby-sass](http://sass-lang.com/install);
