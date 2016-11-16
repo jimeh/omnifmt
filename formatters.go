@@ -123,6 +123,7 @@ var formatters = []*formatter{
 			EMACS:   []string{"ruby-mode"},
 			SUBLIME: []string{"Ruby"},
 		},
+		AllowError: true,
 	},
 	// SASS
 	{

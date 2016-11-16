@@ -53,6 +53,7 @@ type formatter struct {
 	Extensions []string
 	Install    installMap
 	Syntaxes   syntaxMap
+	AllowError bool
 }
 
 //
@@ -226,7 +227,7 @@ func formatStdin(editor string, syntax string) {
 		log.Fatalln("Cannot find a supported formatter for given editor + syntax combo")
 	}
 
-	if err := formatChain(os.Stdout, os.Stdin, formatter.Commands); err != nil {
+	if err := formatChain(os.Stdout, os.Stdin, formatter.Commands, formatter.AllowError); err != nil {
 		log.Fatalln(err)
 	}
 }
@@ -244,7 +245,7 @@ func formatWrite(path string, formatter *formatter) error {
 
 	var buf bytes.Buffer
 
-	if err := formatChain(&buf, file, formatter.Commands); err != nil {
+	if err := formatChain(&buf, file, formatter.Commands, formatter.AllowError); err != nil {
 		return err
 	}
 
@@ -267,10 +268,10 @@ func formatStdout(path string, formatter *formatter) error {
 	}
 	defer file.Close()
 
-	return formatChain(os.Stdout, file, formatter.Commands)
+	return formatChain(os.Stdout, file, formatter.Commands, formatter.AllowError)
 }
 
-func formatChain(dst io.Writer, src io.Reader, commandChain [][]string) error {
+func formatChain(dst io.Writer, src io.Reader, commandChain [][]string, allowError bool) error {
 	var buf, tmp bytes.Buffer
 
 	for i, command := range commandChain {
@@ -291,7 +292,9 @@ func formatChain(dst io.Writer, src io.Reader, commandChain [][]string) error {
 		}
 
 		if err := format(&buf, stepSrc, command); err != nil {
-			return err
+			if !allowError && buf.Len() == 0 {
+				return err
+			}
 		}
 	}
 
