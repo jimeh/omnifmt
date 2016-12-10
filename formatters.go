@@ -111,7 +111,15 @@ var formatters = []*formatter{
 	// Ruby
 	{
 		Commands: [][]string{
-			[]string{"rubocop", "--stdin", "--cache", "false", "--auto-correct", "--format", "emacs", "fake.rb"},
+			[]string{
+				"rubocop",
+				"--stdin",
+				"--cache", "false",
+				"--auto-correct",
+				"--format", "emacs",
+				"--except", "Lint/UnusedMethodArgument,Lint/UnusedBlockArgument",
+				"fake.rb",
+			},
 			[]string{"sed", "-n", `/^====================$/,$p`},
 			[]string{"tail", "-n", "+2"},
 		},
