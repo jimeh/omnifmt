@@ -117,7 +117,7 @@ var formatters = []*formatter{
 				"--cache", "false",
 				"--auto-correct",
 				"--format", "emacs",
-				"--except", "Lint/UnusedMethodArgument,Lint/UnusedBlockArgument",
+				"--except", "Lint/Debugger,Lint/UnusedMethodArgument,Lint/UnusedBlockArgument",
 				"fake.rb",
 			},
 			[]string{"sed", "-n", `/^====================$/,$p`},
